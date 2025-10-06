@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RumiDivulga - Divulgación de Software</title>
+    <meta name="description" content="Portal de divulgación de software, tecnología, tutoriales y recursos educativos para desarrolladores y entusiastas de la tecnología.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-blue-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">RumiDivulga</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <ul class="hidden md:flex space-x-8">
+                    <li><a href="#inicio" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Inicio</a></li>
+                    <li><a href="#articulos" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Artículos</a></li>
+                    <li><a href="#tutoriales" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Tutoriales</a></li>
+                    <li><a href="#herramientas" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Herramientas</a></li>
+                    <li><a href="#noticias" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Noticias</a></li>
+                    <li><a href="#recursos" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Recursos</a></li>
+                </ul>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4">
+                <ul class="space-y-2">
+                    <li><a href="#inicio" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Inicio</a></li>
+                    <li><a href="#articulos" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Artículos</a></li>
+                    <li><a href="#tutoriales" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Tutoriales</a></li>
+                    <li><a href="#herramientas" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Herramientas</a></li>
+                    <li><a href="#noticias" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Noticias</a></li>
+                    <li><a href="#recursos" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Recursos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="inicio" class="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    Divulgación de Software
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                    Descubre las últimas tendencias tecnológicas, aprende con nuestros tutoriales y mantente actualizado con las mejores herramientas de desarrollo.
+                </p>
+                <div class="space-x-4">
+                    <a href="#articulos" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
+                        Explorar Artículos
+                    </a>
+                    <a href="#tutoriales" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block">
+                        Ver Tutoriales
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Articles Section -->
+        <section id="articulos" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-newspaper text-blue-600 mr-3"></i>
+                        Artículos Destacados
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Análisis profundos sobre las últimas tendencias en desarrollo de software y tecnología.
+                    </p>
+                </div>
+                
+                <div id="articulos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Los artículos se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorials Section -->
+        <section id="tutoriales" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+                        Tutoriales Paso a Paso
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Aprende nuevas tecnologías con nuestros tutoriales detallados y ejemplos prácticos.
+                    </p>
+                </div>
+                
+                <div id="tutoriales-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Los tutoriales se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools & Reviews Section -->
+        <section id="herramientas" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-tools text-orange-600 mr-3"></i>
+                        Herramientas y Reseñas
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Descubre y compara las mejores herramientas de desarrollo del mercado.
+                    </p>
+                </div>
+                
+                <div id="herramientas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Las herramientas se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="noticias" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-rss text-red-600 mr-3"></i>
+                        Últimas Noticias
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Mantente al día con las últimas novedades del mundo del desarrollo de software.
+                    </p>
+                </div>
+                
+                <div id="noticias-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Las noticias se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="recursos" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-book text-purple-600 mr-3"></i>
+                        Recursos Educativos
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Una colección curada de recursos para acelerar tu aprendizaje en programación.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Resource Categories -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-code text-4xl text-blue-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Lenguajes</h3>
+                            <p class="text-gray-600 text-sm">Recursos para aprender diferentes lenguajes de programación</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-layer-group text-4xl text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Frameworks</h3>
+                            <p class="text-gray-600 text-sm">Guías y documentación de frameworks populares</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-database text-4xl text-orange-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Bases de Datos</h3>
+                            <p class="text-gray-600 text-sm">Recursos sobre gestión y diseño de bases de datos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-cloud text-4xl text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Cloud</h3>
+                            <p class="text-gray-600 text-sm">Guías sobre tecnologías y servicios en la nube</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="py-16 bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4">
+                    <i class="fas fa-envelope mr-3"></i>
+                    Suscríbete a Nuestro Newsletter
+                </h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto">
+                    Recibe las últimas novedades, tutoriales exclusivos y recursos directamente en tu bandeja de entrada.
+                </p>
+                <div class="max-w-md mx-auto flex">
+                    <input type="email" placeholder="Tu dirección de email" class="flex-1 px-4 py-3 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
+                    <button class="bg-white text-blue-600 px-6 py-3 rounded-r-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Suscribirse
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- About -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-code text-blue-400 text-xl"></i>
+                        <h3 class="text-xl font-bold">RumiDivulga</h3>
+                    </div>
+                    <p class="text-gray-400">
+                        Tu fuente confiable de información sobre desarrollo de software, tecnología y programación.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#articulos" class="text-gray-400 hover:text-white transition-colors">Artículos</a></li>
+                        <li><a href="#tutoriales" class="text-gray-400 hover:text-white transition-colors">Tutoriales</a></li>
+                        <li><a href="#herramientas" class="text-gray-400 hover:text-white transition-colors">Herramientas</a></li>
+                        <li><a href="#recursos" class="text-gray-400 hover:text-white transition-colors">Recursos</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Categorías</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Frontend</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Backend</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">DevOps</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">IA & ML</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social Media -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 RumiDivulga. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+      <!-- Chatbot de Dialogflow -->
+    <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+
+    <df-messenger
+        project-id="hallowed-trail-473714-g1"
+        agent-id="cee26d55-c2ec-44cd-8dfd-98b5963b2039"
+        language-code="en"
+        max-query-length="-1">
+        <df-messenger-chat-bubble chat-title="OZUNA"></df-messenger-chat-bubble>
+    </df-messenger>
+
+    <style>
+      df-messenger {
+        z-index: 999;
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        --df-messenger-font-color: #000;
+        --df-messenger-font-family: 'Inter', sans-serif;
+        --df-messenger-chat-background: #f3f6fc;
+        --df-messenger-message-user-background: #d3e3fd;
+        --df-messenger-message-bot-background: #fff;
+      }
+    </style>
+
+
+    <!-- JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
