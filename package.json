@@ -9,7 +9,8 @@
     "build": "echo 'Build process not needed for this project'",
     "install-all": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "convert-pdfs": "node scripts/convert-pdfs.js"
+    "convert-pdfs": "node scripts/convert-pdfs.js",
+    "railway": "node server.js"
   },
   "repository": {
     "type": "git",
