@@ -1,311 +1,297 @@
-# TechDivulga - Portal de Divulgación de Software
+# 🤖 RumiDivulga - Portal con Chatbot de Voz RAG
 
-## 📋 Descripción del Proyecto
+Portal de divulgación de software con chatbot de voz inteligente que implementa RAG (Retrieval-Augmented Generation) y metodología CRISP-DM.
 
-**TechDivulga** es una plataforma web moderna y completa dedicada a la divulgación de software y tecnología. Proporciona contenido educativo de alta calidad incluyendo artículos especializados, tutoriales paso a paso, reseñas de herramientas, noticias del sector tecnológico y recursos educativos curados.
+## 🌟 Características Principales
 
-### 🎯 Objetivos Principales
+### 🎯 Portal Web
+- ✅ Diseño moderno y responsive con Tailwind CSS
+- ✅ Secciones de artículos, tutoriales, herramientas y noticias
+- ✅ Navegación suave (smooth scroll)
+- ✅ Menú móvil responsive
+- ✅ Animaciones al hacer scroll
 
-- **Educar**: Proporcionar contenido técnico accesible y bien estructurado
-- **Actualizar**: Mantener a la comunidad informada sobre las últimas tendencias
-- **Conectar**: Crear un espacio de intercambio de conocimiento
-- **Inspirar**: Motivar el aprendizaje continuo en tecnología
+### 🤖 Chatbot de Voz con IA
+- ✅ **Reconocimiento de voz** (Speech-to-Text) en español
+- ✅ **Síntesis de voz** (Text-to-Speech) para respuestas
+- ✅ **Sistema RAG** (Retrieval-Augmented Generation)
+- ✅ **Base de conocimiento personalizada** con PDFs y TXT
+- ✅ **Metodología CRISP-DM** completa implementada
+- ✅ **Storage persistente** para documentos
+- ✅ **Búsqueda semántica** por relevancia
 
-## ✨ Características Implementadas
+## 📋 Requisitos
 
-### 🏠 Página Principal
-- **Hero Section**: Presentación atractiva con llamadas a la acción
-- **Navegación Responsive**: Menú adaptativo para móviles y desktop
-- **Secciones Organizadas**: Contenido bien estructurado por categorías
-- **Newsletter**: Sistema de suscripción integrado
-- **Footer Completo**: Enlaces y información de contacto
+### Navegador
+- **Chrome/Edge**: Soporte completo ✅
+- **Safari**: Soporte completo (iOS 14.5+) ✅
+- **Firefox**: Solo síntesis de voz (no reconocimiento) ⚠️
 
-### 📚 Sistema de Contenidos
-- **Artículos**: Contenido editorial sobre tendencias y tecnologías
-- **Tutoriales**: Guías paso a paso con sistema de progreso
-- **Herramientas**: Reseñas y comparativas de software
-- **Noticias**: Actualizaciones del sector tecnológico
-- **Recursos**: Biblioteca de materiales educativos
+### Servidor Web (opcional)
+Para desarrollo local puedes usar:
+- Python: `python -m http.server 8000`
+- Node.js: `npx serve`
+- PHP: `php -S localhost:8000`
 
-### 🎨 Diseño y UX
-- **Diseño Responsive**: Optimizado para todos los dispositivos
-- **Animaciones Suaves**: Transiciones y efectos CSS modernos
-- **Tipografía Moderna**: Fuente Inter para mejor legibilidad
-- **Iconografía**: Font Awesome para iconos consistentes
-- **Colores Accesibles**: Paleta que cumple estándares de accesibilidad
+## 🚀 Instalación
 
-### 🔧 Funcionalidades Técnicas
-- **Table API Integration**: Sistema de gestión de contenido dinámico
-- **Navegación Suave**: Scroll suave entre secciones
-- **Búsqueda**: Funcionalidad de búsqueda integrada
-- **Comentarios**: Sistema de comentarios (mock)
-- **Carga Progresiva**: Skeleton loaders para mejor UX
+### Método 1: Uso Directo (Sin instalación)
 
-## 🗂️ Estructura del Proyecto
+1. Descarga todos los archivos
+2. Abre `index.html` en tu navegador
+3. ¡Listo! El sitio funciona sin servidor
+
+### Método 2: Con Servidor Local
+
+```bash
+# Clonar o descargar el proyecto
+cd rumidivulga-chatbot
+
+# Opción A: Python
+python -m http.server 8000
+
+# Opción B: Node.js
+npx serve
+
+# Abrir en el navegador
+# http://localhost:8000
+```
+
+### Método 3: Deploy en Vercel (Gratis)
+
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Seguir las instrucciones
+```
+
+## 📁 Estructura del Proyecto
 
 ```
-techdivulga/
-├── index.html              # Página principal
-├── css/
-│   └── style.css          # Estilos personalizados
+rumidivulga-chatbot/
+├── index.html                 # Página principal
+├── README.md                  # Este archivo
+│
 ├── js/
-│   ├── main.js            # Lógica principal
-│   └── api.js             # Integración con Table API
-├── pages/
-│   ├── articulo.html      # Template de artículo
-│   └── tutorial.html      # Template de tutorial interactivo
-└── README.md              # Documentación del proyecto
+│   ├── main.js               # Scripts del sitio
+│   └── voice-chatbot.js      # Componente React del chatbot
+│
+├── data/
+│   └── knowledge-base/       # Carpeta para documentos (PDFs, TXT)
+│       ├── tutoriales/
+│       ├── articulos/
+│       └── herramientas/
+│
+└── docs/
+    └── crisp-dm-methodology.md  # Documentación de la metodología
 ```
 
-## 🚀 URIs Funcionales y Navegación
+## 🎓 Metodología CRISP-DM Implementada
 
-### Página Principal
-- **URL**: `/` o `/index.html`
-- **Secciones**:
-  - `#inicio` - Hero section
-  - `#articulos` - Artículos destacados
-  - `#tutoriales` - Tutoriales disponibles
-  - `#herramientas` - Herramientas reseñadas
-  - `#noticias` - Últimas noticias
-  - `#recursos` - Recursos educativos
+El chatbot implementa las 6 fases de CRISP-DM:
 
-### Páginas de Contenido
-- **Artículo**: `/pages/articulo.html?id={article_id}`
-- **Tutorial**: `/pages/tutorial.html?id={tutorial_id}`
+### 1️⃣ Comprensión del Negocio
+- Verifica disponibilidad de documentos
+- Identifica el objetivo de la consulta
 
-### API Endpoints (Table API)
-- **Artículos**: `GET /tables/articulos?page=1&limit=6`
-- **Tutoriales**: `GET /tables/tutoriales?page=1&limit=6`
-- **Herramientas**: `GET /tables/herramientas?page=1&limit=8`
-- **Noticias**: `GET /tables/noticias?page=1&limit=6`
+### 2️⃣ Comprensión de Datos
+- Extrae palabras clave de la consulta
+- Identifica entidades relevantes
 
-## 🗄️ Modelos de Datos
+### 3️⃣ Preparación de Datos
+- Divide documentos en chunks de 500 palabras
+- Normaliza y limpia el texto
+- Crea índice de búsqueda
 
-### Artículos
+### 4️⃣ Modelado
+- Búsqueda por similitud de texto
+- Scoring de relevancia
+- Ranking de resultados
+
+### 5️⃣ Evaluación
+- Valida calidad de resultados
+- Verifica relevancia mínima
+- Control de calidad
+
+### 6️⃣ Despliegue
+- Genera respuesta contextual
+- Cita fuente del documento
+- Síntesis de voz (opcional)
+
+## 💡 Cómo Usar el Chatbot
+
+### Paso 1: Cargar Documentos
+
+1. Haz clic en el botón del chatbot (esquina inferior derecha)
+2. Haz clic en el icono ⬆️ (Upload)
+3. Selecciona archivos PDF, TXT o JSON
+4. Espera a que se procesen
+
+### Paso 2: Hacer Preguntas
+
+**Opción A: Por Voz**
+1. Haz clic en el botón del micrófono 🎤
+2. Habla tu pregunta en español
+3. El chatbot transcribe y busca automáticamente
+
+**Opción B: Por Texto**
+1. Escribe tu pregunta en el campo de texto
+2. Presiona Enter o el botón de enviar ➤
+
+### Paso 3: Escuchar Respuestas
+
+- Las respuestas se leen automáticamente si la voz está activa 🔊
+- Usa el botón de volumen para silenciar 🔇
+- Las respuestas siempre citan la fuente del documento 📄
+
+## 🔧 Configuración Avanzada
+
+### Personalizar Chunks (Tamaño de fragmentos)
+
+En `voice-chatbot.js`, línea ~180:
+
 ```javascript
-{
-  id: "string",
-  titulo: "string",
-  extracto: "string",
-  contenido: "rich_text",
-  categoria: "string",
-  autor: "string",
-  fecha_publicacion: "datetime",
-  tiempo_lectura: "string",
-  imagen_url: "string",
-  tags: ["array"],
-  publicado: "boolean"
+const chunkDocument = (text, chunkSize = 500) => {
+  // Cambiar chunkSize a 300 para fragmentos más pequeños
+  // o 1000 para fragmentos más grandes
 }
 ```
 
-### Tutoriales
+### Ajustar Scoring de Búsqueda
+
+En `voice-chatbot.js`, línea ~240:
+
 ```javascript
-{
-  id: "string",
-  titulo: "string",
-  descripcion: "string",
-  nivel: "principiante|intermedio|avanzado",
-  duracion: "string",
-  num_lecciones: "number",
-  categoria: "string",
-  tecnologias: ["array"],
-  objetivos: ["array"],
-  prerequisitos: ["array"],
-  valoracion: "number",
-  num_estudiantes: "number",
-  imagen_url: "string",
-  publicado: "boolean"
-}
+score += occurrences * 2; // Cambiar peso por palabra
+score += 10; // Cambiar bonus por coincidencia exacta
+score += consecutiveMatches * 5; // Cambiar bonus por palabras consecutivas
 ```
 
-### Herramientas
+### Cambiar Voz de Síntesis
+
+En `voice-chatbot.js`, línea ~305:
+
 ```javascript
-{
-  id: "string",
-  nombre: "string",
-  descripcion: "string",
-  categoria: "string",
-  icono: "string",
-  valoracion: "number",
-  precio: "gratuita|freemium|pago",
-  plataformas: ["array"],
-  sitio_web: "string",
-  caracteristicas: ["array"],
-  pros: ["array"],
-  contras: ["array"],
-  fecha_review: "datetime",
-  publicado: "boolean"
-}
+utterance.rate = 0.9; // Velocidad (0.1 - 2.0)
+utterance.pitch = 1;  // Tono (0.0 - 2.0)
+utterance.volume = 1; // Volumen (0.0 - 1.0)
 ```
 
-### Noticias
+## 📚 Tipos de Documentos Soportados
+
+### ✅ Soportados Actualmente
+- **PDF**: Extracción básica de texto
+- **TXT**: Texto plano en UTF-8
+- **JSON**: Datos estructurados
+
+### 🔜 Próximamente
+- DOCX (Microsoft Word)
+- MD (Markdown)
+- CSV (Datos tabulares)
+
+## 🎨 Personalización Visual
+
+### Colores del Chatbot
+
+En `voice-chatbot.js`, buscar las clases de Tailwind:
+
 ```javascript
-{
-  id: "string",
-  titulo: "string",
-  resumen: "string",
-  contenido: "rich_text",
-  categoria: "string",
-  fecha_publicacion: "datetime",
-  fuente: "string",
-  url_externa: "string",
-  imagen_url: "string",
-  tags: ["array"],
-  relevancia: "baja|media|alta|critica",
-  publicado: "boolean"
-}
+// Cambiar colores del gradiente
+"bg-gradient-to-r from-blue-600 to-purple-700"
+
+// Cambiar a verde-azul
+"bg-gradient-to-r from-green-600 to-blue-700"
+
+// Cambiar a rojo-naranja
+"bg-gradient-to-r from-red-600 to-orange-700"
 ```
 
-## 🛠️ Tecnologías Utilizadas
+## 🐛 Resolución de Problemas
 
-### Frontend
-- **HTML5**: Estructura semántica y accesible
-- **CSS3**: Estilos modernos con Flexbox y Grid
-- **JavaScript ES6+**: Funcionalidad interactiva moderna
-- **Tailwind CSS**: Framework de utilidades CSS
-- **Font Awesome**: Iconografía consistente
-- **Google Fonts**: Tipografía Inter
+### El chatbot no aparece
+- ✅ Verifica que React y Babel estén cargados
+- ✅ Abre la consola del navegador (F12)
+- ✅ Verifica errores en la consola
 
-### Integración de Datos
-- **Table API**: Sistema RESTful para gestión de contenido
-- **Fetch API**: Comunicación asíncrona con el backend
-- **JSON**: Formato de intercambio de datos
+### El reconocimiento de voz no funciona
+- ✅ Usa Chrome o Edge (Firefox no soporta Web Speech API)
+- ✅ Da permisos de micrófono al navegador
+- ✅ Verifica que tu micrófono funcione
 
-### Herramientas de Desarrollo
-- **Prism.js**: Syntax highlighting para código
-- **Intersection Observer**: Animaciones en scroll
-- **Local Storage**: Persistencia de preferencias del usuario
+### Los PDFs no se procesan bien
+- ✅ Implementación actual es básica
+- ✅ Para producción, instala PDF.js:
+```bash
+npm install pdfjs-dist
+```
 
-## 📱 Características Responsive
+### Los documentos no se guardan
+- ✅ Verifica que el navegador soporte `window.storage`
+- ✅ Limpia el storage: `window.storage.delete('knowledge-base')`
+- ✅ Recarga la página
 
-- **Breakpoints**:
-  - Mobile: < 768px
-  - Tablet: 768px - 1024px
-  - Desktop: > 1024px
-- **Navegación Adaptativa**: Menú hamburguesa en móviles
-- **Grid Flexible**: Layouts que se adaptan al tamaño de pantalla
-- **Imágenes Responsive**: Optimización automática según dispositivo
+## 📈 Mejoras Futuras
 
-## 🎨 Sistema de Diseño
+### Corto Plazo
+- [ ] Integración con PDF.js para mejor extracción
+- [ ] Soporte para DOCX y Markdown
+- [ ] Historial de conversaciones
+- [ ] Exportar conversaciones a PDF
 
-### Colores Principales
-- **Primario**: Azul (#2563eb)
-- **Secundario**: Púrpura (#7c3aed)
-- **Accent**: Verde (#10b981)
-- **Neutros**: Escala de grises
-- **Estados**: Verde (éxito), Rojo (error), Amarillo (advertencia)
+### Medio Plazo
+- [ ] Embeddings con TensorFlow.js
+- [ ] Búsqueda semántica avanzada
+- [ ] Multi-idioma (inglés, portugués)
+- [ ] Análisis de sentimientos
 
-### Tipografía
-- **Familia**: Inter (Google Fonts)
-- **Pesos**: 300, 400, 500, 600, 700
-- **Jerarquía**: H1-H6 bien definida
-
-### Componentes
-- **Cards**: Tarjetas con hover effects y sombras
-- **Botones**: Estados hover y focus bien definidos
-- **Forms**: Campos con validación visual
-- **Navigation**: Menú con estados activos
-
-## 🚧 Funcionalidades Pendientes
-
-### Próximas Implementaciones
-1. **Sistema de Búsqueda Avanzada**
-   - Filtros por categoría, autor, fecha
-   - Búsqueda en tiempo real
-   - Sugerencias automáticas
-
-2. **Gestión de Usuarios**
-   - Registro y autenticación
-   - Perfiles de usuario
-   - Favoritos y listas personalizadas
-
-3. **Sistema de Comentarios Completo**
-   - Comentarios anidados
-   - Moderación de contenido
-   - Notificaciones
-
-4. **Panel de Administración**
-   - CRUD completo para contenido
-   - Estadísticas y analytics
-   - Gestión de usuarios
-
-5. **Funcionalidades Sociales**
-   - Compartir en redes sociales
-   - Sistema de ratings
-   - Recomendaciones personalizadas
-
-6. **Optimizaciones de Performance**
-   - Lazy loading de imágenes
-   - Service Worker para cache
-   - Optimización de bundle
-
-7. **Accessibility Improvements**
-   - Navegación por teclado completa
-   - Screen reader optimizations
-   - Alto contraste opcional
-
-## 📈 Próximos Pasos Recomendados
-
-### Fase 1: Mejoras de Contenido (2-3 semanas)
-- [ ] Implementar sistema de búsqueda funcional
-- [ ] Agregar más templates de páginas de contenido
-- [ ] Crear sistema de categorías dinámico
-- [ ] Implementar relacionados automáticos
-
-### Fase 2: Interactividad Avanzada (3-4 semanas)
-- [ ] Sistema completo de comentarios con Table API
-- [ ] Newsletter funcional con confirmación
-- [ ] Sistema de ratings y reviews
-- [ ] Compartir en redes sociales
-
-### Fase 3: Panel de Administración (4-5 semanas)
-- [ ] Crear panel admin con autenticación
-- [ ] CRUD completo para todos los contenidos
-- [ ] Sistema de upload de imágenes
-- [ ] Analytics y estadísticas
-
-### Fase 4: Optimización y SEO (2-3 semanas)
-- [ ] Implementar meta tags dinámicos
-- [ ] Sitemap automático
-- [ ] Optimización de imágenes
-- [ ] Performance improvements
-
-## 🔧 Instalación y Desarrollo
-
-### Requisitos
-- Navegador web moderno
-- Servidor web local (opcional para desarrollo)
-
-### Configuración
-1. Clonar o descargar el proyecto
-2. Abrir `index.html` en un navegador
-3. Para desarrollo activo, usar servidor local:
-   ```bash
-   # Con Python
-   python -m http.server 8000
-   
-   # Con Node.js
-   npx serve .
-   ```
-
-### Estructura de Datos
-- Los datos se gestionan a través de la Table API
-- Esquemas predefinidos para artículos, tutoriales, herramientas y noticias
-- Datos de ejemplo incluidos para demostración
-
-## 📄 Licencia
-
-Proyecto de código abierto desarrollado para fines educativos y de demostración.
+### Largo Plazo
+- [ ] Integración con Claude API
+- [ ] Vector database (Pinecone/Weaviate)
+- [ ] Fine-tuning con documentos específicos
+- [ ] Dashboard de analytics
 
 ## 🤝 Contribuciones
 
-Las contribuciones son bienvenidas. Areas de mejora prioritarias:
-- Accesibilidad web
-- Performance optimization
-- Nuevas funcionalidades
-- Correcciones de bugs
-- Mejoras en documentación
+¡Las contribuciones son bienvenidas! Por favor:
+
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+**RumiDivulga Team**
+- Email: contacto@rumidivulga.com
+- GitHub: [@rumidivulga](https://github.com/rumidivulga)
+
+## 🙏 Agradecimientos
+
+- **Tailwind CSS** - Framework CSS
+- **React** - Biblioteca UI
+- **Lucide React** - Iconos
+- **Web Speech API** - Reconocimiento y síntesis de voz
+- **CRISP-DM** - Metodología de Data Mining
+
+## 📞 Soporte
+
+Si tienes problemas o preguntas:
+
+1. Revisa la sección de **Resolución de Problemas**
+2. Abre un [Issue en GitHub](https://github.com/rumidivulga/chatbot/issues)
+3. Contáctanos en: soporte@rumidivulga.com
 
 ---
 
-**TechDivulga** - Conectando desarrolladores con el conocimiento que necesitan para crear el futuro digital.
+**Hecho con ❤️ por RumiDivulga**
+
+*Última actualización: Diciembre 2024*

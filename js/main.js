@@ -1,477 +1,437 @@
-// TechDivulga - Main JavaScript File
+// main.js - Scripts principales de RumiDivulga
 
-// DOM Elements
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const navLinks = document.querySelectorAll('.nav-link');
+// ==================== INICIALIZACIÓN ====================
 
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    initializeNavigation();
-    loadInitialContent();
-    setupAnimations();
-    setupNewsletterForm();
+    console.log('🚀 RumiDivulga iniciado');
+    
+    // Inicializar componentes
+    initMobileMenu();
+    initSmoothScroll();
+    initActiveNavigation();
+    loadDynamicContent();
+    initNewsletterForm();
 });
 
-// Navigation Functions
-function initializeNavigation() {
-    // Mobile menu toggle
-    mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
-    
-    // Smooth scroll for navigation links
-    navLinks.forEach(link => {
-        link.addEventListener('click', handleNavClick);
-    });
-    
-    // Update active navigation on scroll
-    window.addEventListener('scroll', updateActiveNavigation);
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!mobileMenu?.contains(e.target) && !mobileMenuBtn?.contains(e.target)) {
-            closeMobileMenu();
-        }
-    });
-}
+// ==================== MOBILE MENU ====================
 
-function toggleMobileMenu() {
-    mobileMenu?.classList.toggle('hidden');
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
     
-    // Toggle hamburger icon
-    const icon = mobileMenuBtn?.querySelector('i');
-    if (icon) {
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
-    }
-}
-
-function closeMobileMenu() {
-    mobileMenu?.classList.add('hidden');
-    const icon = mobileMenuBtn?.querySelector('i');
-    if (icon) {
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
-    }
-}
-
-function handleNavClick(e) {
-    e.preventDefault();
-    const targetId = e.target.getAttribute('href');
-    
-    if (targetId.startsWith('#')) {
-        const targetSection = document.querySelector(targetId);
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 80; // Account for fixed header
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    }
-    
-    // Close mobile menu after clicking
-    closeMobileMenu();
-}
-
-function updateActiveNavigation() {
-    const sections = document.querySelectorAll('section[id]');
-    const scrollPosition = window.scrollY + 100; // Account for header height
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute('id');
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            
+            // Cambiar icono
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars text-xl';
+            } else {
+                icon.className = 'fas fa-times text-xl';
+            }
+        });
         
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            // Update active navigation link
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${sectionId}`) {
-                    link.classList.add('active');
+        // Cerrar menú al hacer clic en un enlace
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.className = 'fas fa-bars text-xl';
+            });
+        });
+    }
+}
+
+// ==================== SMOOTH SCROLL ====================
+
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            
+            // Ignorar enlaces que no son a secciones
+            if (href === '#' || href === '#!') {
+                return;
+            }
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Actualizar URL sin hacer scroll
+                history.pushState(null, null, href);
+            }
+        });
+    });
+}
+
+// ==================== ACTIVE NAVIGATION ====================
+
+function initActiveNavigation() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    if (sections.length === 0 || navLinks.length === 0) return;
+    
+    window.addEventListener('scroll', () => {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            
+            if (pageYOffset >= sectionTop - 150) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('text-blue-600', 'font-semibold');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('text-blue-600', 'font-semibold');
+            }
+        });
+    });
+}
+
+// ==================== DYNAMIC CONTENT LOADING ====================
+
+function loadDynamicContent() {
+    loadArticles();
+    loadTutorials();
+    loadTools();
+    loadNews();
+}
+
+// ==================== ARTÍCULOS ====================
+
+async function loadArticles() {
+    const articlesGrid = document.getElementById('articulos-grid');
+    if (!articlesGrid) return;
+    
+    const articles = [
+        {
+            title: "El Futuro de JavaScript en 2025",
+            excerpt: "Exploramos las nuevas características y tendencias que definirán JavaScript este año.",
+            category: "Frontend",
+            image: "https://via.placeholder.com/400x250/3B82F6/FFFFFF?text=JavaScript+2025",
+            link: "#",
+            date: "15 Dic 2024"
+        },
+        {
+            title: "Introducción a Machine Learning con Python",
+            excerpt: "Guía completa para comenzar en el mundo del ML usando Python y sus bibliotecas.",
+            category: "IA/ML",
+            image: "https://via.placeholder.com/400x250/10B981/FFFFFF?text=Python+ML",
+            link: "#",
+            date: "12 Dic 2024"
+        },
+        {
+            title: "DevOps: Mejores Prácticas para CI/CD",
+            excerpt: "Implementa pipelines eficientes de integración y despliegue continuo.",
+            category: "DevOps",
+            image: "https://via.placeholder.com/400x250/F59E0B/FFFFFF?text=DevOps+CI/CD",
+            link: "#",
+            date: "10 Dic 2024"
+        },
+        {
+            title: "React 19: Nuevas Características",
+            excerpt: "Descubre todo lo nuevo que trae React 19 y cómo aprovechar sus mejoras.",
+            category: "Frontend",
+            image: "https://via.placeholder.com/400x250/06B6D4/FFFFFF?text=React+19",
+            link: "#",
+            date: "08 Dic 2024"
+        },
+        {
+            title: "Arquitectura de Microservicios",
+            excerpt: "Aprende a diseñar y construir aplicaciones escalables con microservicios.",
+            category: "Backend",
+            image: "https://via.placeholder.com/400x250/8B5CF6/FFFFFF?text=Microservices",
+            link: "#",
+            date: "05 Dic 2024"
+        },
+        {
+            title: "Seguridad en Aplicaciones Web",
+            excerpt: "Guía completa sobre las mejores prácticas de seguridad para aplicaciones web modernas.",
+            category: "Seguridad",
+            image: "https://via.placeholder.com/400x250/EF4444/FFFFFF?text=Web+Security",
+            link: "#",
+            date: "03 Dic 2024"
+        }
+    ];
+    
+    articlesGrid.innerHTML = articles.map(article => `
+        <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 fade-in">
+            <img src="${article.image}" alt="${article.title}" class="w-full h-48 object-cover">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-blue-600 uppercase">${article.category}</span>
+                    <span class="text-xs text-gray-500">${article.date}</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mt-2 mb-3 hover:text-blue-600 transition-colors">${article.title}</h3>
+                <p class="text-gray-600 text-sm mb-4">${article.excerpt}</p>
+                <a href="${article.link}" class="text-blue-600 font-semibold hover:text-blue-700 inline-flex items-center group">
+                    Leer más 
+                    <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </article>
+    `).join('');
+}
+
+// ==================== TUTORIALES ====================
+
+async function loadTutorials() {
+    const tutorialsGrid = document.getElementById('tutoriales-grid');
+    if (!tutorialsGrid) return;
+    
+    const tutorials = [
+        {
+            title: "React Hooks Completo",
+            duration: "2 horas",
+            level: "Intermedio",
+            icon: "fab fa-react",
+            color: "blue",
+            lessons: 12
+        },
+        {
+            title: "Node.js y Express API",
+            duration: "3 horas",
+            level: "Principiante",
+            icon: "fab fa-node",
+            color: "green",
+            lessons: 15
+        },
+        {
+            title: "Docker para Desarrolladores",
+            duration: "1.5 horas",
+            level: "Intermedio",
+            icon: "fab fa-docker",
+            color: "sky",
+            lessons: 8
+        },
+        {
+            title: "Python Data Science",
+            duration: "4 horas",
+            level: "Avanzado",
+            icon: "fab fa-python",
+            color: "yellow",
+            lessons: 20
+        },
+        {
+            title: "Git & GitHub Esencial",
+            duration: "2 horas",
+            level: "Principiante",
+            icon: "fab fa-git-alt",
+            color: "orange",
+            lessons: 10
+        },
+        {
+            title: "Vue.js 3 Fundamentos",
+            duration: "2.5 horas",
+            level: "Intermedio",
+            icon: "fab fa-vuejs",
+            color: "emerald",
+            lessons: 14
+        }
+    ];
+    
+    tutorialsGrid.innerHTML = tutorials.map(tutorial => `
+        <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 fade-in">
+            <div class="text-center">
+                <div class="bg-${tutorial.color}-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="${tutorial.icon} text-4xl text-${tutorial.color}-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">${tutorial.title}</h3>
+                <div class="flex justify-center items-center space-x-4 text-sm text-gray-600 mb-2">
+                    <span><i class="far fa-clock mr-1"></i>${tutorial.duration}</span>
+                    <span><i class="fas fa-signal mr-1"></i>${tutorial.level}</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-4">${tutorial.lessons} lecciones</p>
+                <button class="bg-${tutorial.color}-600 text-white px-6 py-2 rounded-lg hover:bg-${tutorial.color}-700 transition-colors w-full">
+                    Comenzar Tutorial
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==================== HERRAMIENTAS ====================
+
+async function loadTools() {
+    const toolsGrid = document.getElementById('herramientas-grid');
+    if (!toolsGrid) return;
+    
+    const tools = [
+        { name: "VS Code", icon: "fas fa-code", rating: 5, category: "Editor" },
+        { name: "Git", icon: "fab fa-git-alt", rating: 5, category: "Control" },
+        { name: "Postman", icon: "fas fa-paper-plane", rating: 4, category: "API" },
+        { name: "Docker", icon: "fab fa-docker", rating: 5, category: "Container" },
+        { name: "Figma", icon: "fas fa-pencil-ruler", rating: 5, category: "Diseño" },
+        { name: "GitHub", icon: "fab fa-github", rating: 5, category: "Repo" },
+        { name: "MongoDB", icon: "fas fa-database", rating: 4, category: "DB" },
+        { name: "Webpack", icon: "fas fa-box", rating: 4, category: "Build" }
+    ];
+    
+    toolsGrid.innerHTML = tools.map(tool => `
+        <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 text-center fade-in">
+            <i class="${tool.icon} text-4xl text-blue-600 mb-3"></i>
+            <h4 class="font-semibold text-gray-800 mb-1">${tool.name}</h4>
+            <p class="text-xs text-gray-500 mb-2">${tool.category}</p>
+            <div class="text-yellow-400 text-sm">
+                ${'★'.repeat(tool.rating)}${'☆'.repeat(5-tool.rating)}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==================== NOTICIAS ====================
+
+async function loadNews() {
+    const newsGrid = document.getElementById('noticias-grid');
+    if (!newsGrid) return;
+    
+    const news = [
+        {
+            title: "Nuevo Framework JavaScript Revoluciona el Desarrollo",
+            date: "Hace 2 días",
+            source: "TechNews",
+            category: "Frontend"
+        },
+        {
+            title: "Python 3.13 Lanzado con Mejoras de Rendimiento",
+            date: "Hace 1 semana",
+            source: "Python.org",
+            category: "Lenguajes"
+        },
+        {
+            title: "GitHub Copilot Actualizado con Nuevas Capacidades de IA",
+            date: "Hace 3 días",
+            source: "GitHub Blog",
+            category: "IA"
+        },
+        {
+            title: "Docker Desktop Añade Soporte para WebAssembly",
+            date: "Hace 5 días",
+            source: "Docker",
+            category: "DevOps"
+        },
+        {
+            title: "React Native 0.73 Trae Mejoras Significativas",
+            date: "Hace 4 días",
+            source: "React Native",
+            category: "Mobile"
+        },
+        {
+            title: "TypeScript 5.3: Nuevas Características y Optimizaciones",
+            date: "Hace 6 días",
+            source: "TypeScript",
+            category: "Lenguajes"
+        }
+    ];
+    
+    newsGrid.innerHTML = news.map(item => `
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 fade-in">
+            <div class="flex items-start justify-between mb-3">
+                <span class="text-xs font-semibold text-red-600 uppercase">${item.source}</span>
+                <span class="text-xs text-gray-500">${item.date}</span>
+            </div>
+            <span class="inline-block px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded mb-2">
+                ${item.category}
+            </span>
+            <h4 class="font-bold text-gray-800 mb-2 hover:text-blue-600 transition-colors">${item.title}</h4>
+            <a href="#" class="text-blue-600 text-sm font-semibold hover:text-blue-700 inline-flex items-center group">
+                Leer noticia completa 
+                <i class="fas fa-arrow-right ml-1 transform group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+    `).join('');
+}
+
+// ==================== NEWSLETTER ====================
+
+function initNewsletterForm() {
+    const newsletterInputs = document.querySelectorAll('input[type="email"]');
+    const newsletterButtons = document.querySelectorAll('button');
+    
+    newsletterButtons.forEach(button => {
+        if (button.textContent.includes('Suscribirse')) {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const input = button.previousElementSibling;
+                if (input && input.type === 'email') {
+                    const email = input.value.trim();
+                    if (validateEmail(email)) {
+                        alert(`¡Gracias por suscribirte! Confirma tu email: ${email}`);
+                        input.value = '';
+                    } else {
+                        alert('Por favor, ingresa un email válido');
+                    }
                 }
             });
         }
     });
 }
 
-// Content Loading Functions
-function loadInitialContent() {
-    if (window.techDivulgaAPI && window.contentRenderer) {
-        loadArticles();
-        loadTutorials();
-        loadTools();
-        loadNews();
-    } else {
-        // Wait for API to be available
-        setTimeout(loadInitialContent, 100);
-    }
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
-async function loadArticles() {
-    const articlesGrid = document.getElementById('articulos-grid');
-    if (!articlesGrid) return;
-    
-    // Show loading skeleton
-    showLoadingSkeleton(articlesGrid, 6, 'article');
-    
-    try {
-        const result = await window.techDivulgaAPI.getArticulos({ limit: 6 });
-        const articles = result.data;
-        
-        if (articles.length > 0) {
-            articlesGrid.innerHTML = articles.map(article => window.contentRenderer.renderArticleCard(article)).join('');
-            animateElements(articlesGrid.children);
-        } else {
-            articlesGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No hay artículos disponibles</div>';
+// ==================== ANIMATIONS ====================
+
+// Intersection Observer para animaciones al scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
         }
-    } catch (error) {
-        console.error('Error loading articles:', error);
-        articlesGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Error cargando artículos</div>';
-    }
-}
-
-async function loadTutorials() {
-    const tutorialesGrid = document.getElementById('tutoriales-grid');
-    if (!tutorialesGrid) return;
-    
-    showLoadingSkeleton(tutorialesGrid, 6, 'tutorial');
-    
-    try {
-        const result = await window.techDivulgaAPI.getTutoriales({ limit: 6 });
-        const tutorials = result.data;
-        
-        if (tutorials.length > 0) {
-            tutorialesGrid.innerHTML = tutorials.map(tutorial => window.contentRenderer.renderTutorialCard(tutorial)).join('');
-            animateElements(tutorialesGrid.children);
-        } else {
-            tutorialesGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No hay tutoriales disponibles</div>';
-        }
-    } catch (error) {
-        console.error('Error loading tutorials:', error);
-        tutorialesGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Error cargando tutoriales</div>';
-    }
-}
-
-async function loadTools() {
-    const herramientasGrid = document.getElementById('herramientas-grid');
-    if (!herramientasGrid) return;
-    
-    showLoadingSkeleton(herramientasGrid, 8, 'tool');
-    
-    try {
-        const result = await window.techDivulgaAPI.getHerramientas({ limit: 8 });
-        const tools = result.data;
-        
-        if (tools.length > 0) {
-            herramientasGrid.innerHTML = tools.map(tool => window.contentRenderer.renderToolCard(tool)).join('');
-            animateElements(herramientasGrid.children);
-        } else {
-            herramientasGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No hay herramientas disponibles</div>';
-        }
-    } catch (error) {
-        console.error('Error loading tools:', error);
-        herramientasGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Error cargando herramientas</div>';
-    }
-}
-
-async function loadNews() {
-    const noticiasGrid = document.getElementById('noticias-grid');
-    if (!noticiasGrid) return;
-    
-    showLoadingSkeleton(noticiasGrid, 6, 'news');
-    
-    try {
-        const result = await window.techDivulgaAPI.getNoticias({ limit: 6 });
-        const news = result.data;
-        
-        if (news.length > 0) {
-            noticiasGrid.innerHTML = news.map(newsItem => window.contentRenderer.renderNewsCard(newsItem)).join('');
-            animateElements(noticiasGrid.children);
-        } else {
-            noticiasGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No hay noticias disponibles</div>';
-        }
-    } catch (error) {
-        console.error('Error loading news:', error);
-        noticiasGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Error cargando noticias</div>';
-    }
-}
-
-// Card Creation Functions
-function createArticleCard(article) {
-    return `
-        <article class="article-card card-hover">
-            <div class="article-image" style="background-image: url('${article.image}')"></div>
-            <div class="article-content">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="article-category">${article.category}</span>
-                    <span class="text-gray-500 text-sm">
-                        <i class="fas fa-clock mr-1"></i>${article.readTime}
-                    </span>
-                </div>
-                <h3 class="article-title">${article.title}</h3>
-                <p class="article-excerpt">${article.excerpt}</p>
-                <div class="article-meta">
-                    <div class="flex items-center">
-                        <span>Por ${article.author}</span>
-                        <span class="mx-2">•</span>
-                        <span>${formatDate(article.date)}</span>
-                    </div>
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-function createTutorialCard(tutorial) {
-    return `
-        <article class="tutorial-card card-hover">
-            <div class="tutorial-content">
-                <span class="tutorial-level ${tutorial.level}">${getLevelText(tutorial.level)}</span>
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">${tutorial.title}</h3>
-                <p class="text-gray-600 text-sm mb-4">${tutorial.description}</p>
-                <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
-                    <span><i class="fas fa-clock mr-1"></i>${tutorial.duration}</span>
-                    <span><i class="fas fa-play-circle mr-1"></i>${tutorial.lessons} lecciones</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">${tutorial.category}</span>
-                    <button class="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                        Empezar <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-function createToolCard(tool) {
-    const stars = '★'.repeat(tool.rating) + '☆'.repeat(5 - tool.rating);
-    
-    return `
-        <article class="tool-card card-hover">
-            <div class="tool-icon text-blue-600">
-                <i class="${tool.icon}"></i>
-            </div>
-            <h3 class="tool-name">${tool.name}</h3>
-            <p class="tool-description">${tool.description}</p>
-            <div class="tool-rating text-lg">${stars}</div>
-            <div class="text-xs text-gray-500 mt-2">${tool.category}</div>
-        </article>
-    `;
-}
-
-function createNewsCard(newsItem) {
-    return `
-        <article class="news-card card-hover">
-            <div class="news-content">
-                <div class="news-date">${formatDate(newsItem.date)}</div>
-                <h3 class="news-title">${newsItem.title}</h3>
-                <p class="news-summary">${newsItem.summary}</p>
-                <div class="flex justify-between items-center mt-4">
-                    <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded">${newsItem.category}</span>
-                    <button class="text-red-600 hover:text-red-800 text-sm font-medium">
-                        Leer más <i class="fas fa-external-link-alt ml-1"></i>
-                    </button>
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-// Utility Functions
-function showLoadingSkeleton(container, count, type) {
-    const skeletonHTML = Array(count).fill().map(() => createSkeletonCard(type)).join('');
-    container.innerHTML = skeletonHTML;
-}
-
-function createSkeletonCard(type) {
-    if (type === 'article') {
-        return `
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="skeleton skeleton-image"></div>
-                <div class="p-6">
-                    <div class="skeleton skeleton-text w-1/3 mb-3"></div>
-                    <div class="skeleton skeleton-title mb-3"></div>
-                    <div class="skeleton skeleton-text mb-2"></div>
-                    <div class="skeleton skeleton-text w-2/3"></div>
-                </div>
-            </div>
-        `;
-    } else if (type === 'tutorial') {
-        return `
-            <div class="bg-white rounded-lg shadow-lg border-l-4 border-green-500">
-                <div class="p-6">
-                    <div class="skeleton skeleton-text w-1/4 mb-4"></div>
-                    <div class="skeleton skeleton-title mb-3"></div>
-                    <div class="skeleton skeleton-text mb-2"></div>
-                    <div class="skeleton skeleton-text w-3/4"></div>
-                </div>
-            </div>
-        `;
-    } else if (type === 'tool') {
-        return `
-            <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                <div class="skeleton w-12 h-12 rounded mx-auto mb-4"></div>
-                <div class="skeleton skeleton-title mb-3"></div>
-                <div class="skeleton skeleton-text mb-2"></div>
-                <div class="skeleton skeleton-text w-1/2 mx-auto"></div>
-            </div>
-        `;
-    } else if (type === 'news') {
-        return `
-            <div class="bg-white rounded-lg shadow-lg">
-                <div class="p-6">
-                    <div class="skeleton skeleton-text w-1/4 mb-2"></div>
-                    <div class="skeleton skeleton-title mb-3"></div>
-                    <div class="skeleton skeleton-text mb-2"></div>
-                    <div class="skeleton skeleton-text w-2/3"></div>
-                </div>
-            </div>
-        `;
-    }
-}
-
-function animateElements(elements) {
-    Array.from(elements).forEach((element, index) => {
-        setTimeout(() => {
-            element.classList.add('fade-in-up');
-        }, index * 100);
     });
-}
+}, observerOptions);
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+// Observar elementos cuando el DOM esté listo
+setTimeout(() => {
+    document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        observer.observe(el);
     });
-}
+}, 100);
 
-function getLevelText(level) {
-    const levels = {
-        'beginner': 'Principiante',
-        'intermediate': 'Intermedio',
-        'advanced': 'Avanzado'
-    };
-    return levels[level] || level;
-}
+// ==================== UTILITIES ====================
 
-function setupAnimations() {
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in-up');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe sections for scroll animations
-    document.querySelectorAll('section').forEach(section => {
-        observer.observe(section);
-    });
-}
-
-function setupNewsletterForm() {
-    const newsletterForm = document.querySelector('form') || createNewsletterForm();
-    
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', handleNewsletterSubmit);
+// Logger para desarrollo
+const logger = {
+    log: (message, data) => {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log(`[RumiDivulga] ${message}`, data || '');
+        }
+    },
+    error: (message, error) => {
+        console.error(`[RumiDivulga ERROR] ${message}`, error);
     }
-}
+};
 
-function createNewsletterForm() {
-    // Create form element if it doesn't exist
-    const emailInput = document.querySelector('input[type="email"]');
-    const subscribeBtn = emailInput?.nextElementSibling;
-    
-    if (emailInput && subscribeBtn) {
-        const form = document.createElement('form');
-        form.className = 'max-w-md mx-auto flex';
-        
-        emailInput.parentNode.insertBefore(form, emailInput);
-        form.appendChild(emailInput);
-        form.appendChild(subscribeBtn);
-        
-        return form;
-    }
-    
-    return null;
-}
+// Exportar para uso en otros scripts
+window.RumiDivulga = {
+    logger,
+    loadArticles,
+    loadTutorials,
+    loadTools,
+    loadNews
+};
 
-function handleNewsletterSubmit(e) {
-    e.preventDefault();
-    
-    const emailInput = e.target.querySelector('input[type="email"]');
-    const submitBtn = e.target.querySelector('button');
-    
-    if (!emailInput || !emailInput.value) {
-        showNotification('Por favor, ingresa un email válido', 'error');
-        return;
-    }
-    
-    // Show loading state
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Suscribiendo...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        showNotification('¡Gracias por suscribirte! Recibirás nuestras novedades pronto.', 'success');
-        emailInput.value = '';
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }, 2000);
-}
-
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-        type === 'success' ? 'bg-green-500 text-white' :
-        type === 'error' ? 'bg-red-500 text-white' :
-        'bg-blue-500 text-white'
-    }`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => notification.classList.add('fade-in'), 10);
-    
-    // Remove after 5 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
-}
-
-// Search functionality (for future implementation)
-function setupSearch() {
-    const searchInput = document.querySelector('#search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(handleSearch, 300));
-    }
-}
-
-function handleSearch(e) {
-    const query = e.target.value.toLowerCase();
-    // Implement search logic here
-    console.log('Searching for:', query);
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
+logger.log('✅ Todos los scripts cargados correctamente');

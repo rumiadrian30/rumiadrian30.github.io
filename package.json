@@ -1,0 +1,51 @@
+{
+  "name": "rumiadrian30.github.io",
+  "version": "1.0.0",
+  "description": "Portal de divulgación de software con chatbot de voz inteligente que implementa RAG (Retrieval-Augmented Generation) y metodología CRISP-DM.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'Build process not needed for this project'",
+    "install-all": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "convert-pdfs": "node scripts/convert-pdfs.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rumiadrian30/rumiadrian30.github.io.git"
+  },
+  "keywords": [
+    "chatbot",
+    "rag",
+    "voice-ai",
+    "pdf-processing",
+    "nodejs",
+    "react",
+    "machine-learning"
+  ],
+  "author": "rumiadrian30",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rumiadrian30/rumiadrian30.github.io/issues"
+  },
+  "homepage": "https://github.com/rumiadrian30/rumiadrian30.github.io#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "pdf-parse": "^1.1.1",
+    "multer": "^1.4.5-lts.1",
+    "natural": "^6.8.0",
+    "stopword": "^2.0.0",
+    "uuid": "^9.0.1",
+    "compromise": "^14.11.4",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

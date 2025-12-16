@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RumiDivulga - Chatbot con Voz</title>
+    <title>RumiDivulga - Divulgación de Software</title>
+    <meta name="description" content="Portal de divulgación de software, tecnología, tutoriales y recursos educativos para desarrolladores y entusiastas de la tecnología.">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -13,77 +20,14 @@
             font-family: 'Inter', sans-serif;
         }
         
-        /* Chat personalizado */
-        .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
+        html {
+            scroll-behavior: smooth;
         }
         
-        .chat-bubble {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .chat-bubble:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-        
-        .chat-window {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 380px;
-            height: 600px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .chat-window.open {
-            display: flex;
-        }
-        
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f9fafb;
-        }
-        
-        .message {
-            margin-bottom: 16px;
-            display: flex;
-            gap: 10px;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -91,671 +35,304 @@
             }
         }
         
-        .message.user {
-            flex-direction: row-reverse;
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
         }
         
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 14px;
+        #voice-chat-root {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            z-index: 9999;
         }
         
-        .message.bot .message-avatar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .message.user .message-avatar {
-            background: #e5e7eb;
-            color: #667eea;
-        }
-        
-        .message-content {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            word-wrap: break-word;
-            line-height: 1.5;
-        }
-        
-        .message.bot .message-content {
-            background: white;
-            color: #1f2937;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px 12px 12px 4px;
-        }
-        
-        .message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px 12px 4px 12px;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 12px;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: typing 1.4s infinite;
-        }
-        
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-        
-        .chat-input-container {
-            padding: 16px;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 24px;
-            outline: none;
-            font-size: 14px;
-        }
-        
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-        
-        .voice-button, .send-button {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-        
-        .voice-button {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-        
-        .voice-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-        
-        .voice-button.recording {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            animation: pulse-record 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse-record {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .send-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .send-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .voice-status {
-            padding: 8px 16px;
-            background: #fef3c7;
-            border-radius: 8px;
-            margin: 0 16px 8px;
-            font-size: 12px;
-            color: #92400e;
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .voice-status.active {
-            display: flex;
-        }
-        
-        .voice-bars {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-        }
-        
-        .voice-bar {
-            width: 2px;
-            background: #ef4444;
-            border-radius: 2px;
-            animation: voice-wave 0.8s ease-in-out infinite;
-        }
-        
-        .voice-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
-        .voice-bar:nth-child(2) { height: 10px; animation-delay: 0.1s; }
-        .voice-bar:nth-child(3) { height: 14px; animation-delay: 0.2s; }
-        .voice-bar:nth-child(4) { height: 10px; animation-delay: 0.3s; }
-        .voice-bar:nth-child(5) { height: 6px; animation-delay: 0.4s; }
-        
-        @keyframes voice-wave {
-            0%, 100% { transform: scaleY(0.5); }
-            50% { transform: scaleY(1.5); }
-        }
-        
-        @media (max-width: 480px) {
-            .chat-window {
-                width: calc(100vw - 32px);
-                height: calc(100vh - 100px);
-                right: 16px;
-            }
-            
-            .chat-container {
-                right: 16px;
-                bottom: 16px;
-            }
+        .nav-link:focus {
+            outline: 2px solid #3B82F6;
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Contenido de la página -->
-    <div class="container mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-robot text-blue-600 mr-3"></i>
-                Chatbot OZUNA con Voz y Texto
-            </h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                Asistente inteligente con reconocimiento de voz integrado
-            </p>
-        </div>
-        
-        <!-- Metodología CRISP-DM -->
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">
-                <i class="fas fa-brain text-purple-600 mr-2"></i>
-                Marco Metodológico: CRISP-DM
-            </h2>
-            
-            <div class="space-y-4">
-                <div class="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
-                    <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">1</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Comprensión del Negocio</h3>
-                        <p class="text-sm text-gray-600">Objetivo: Crear un asistente virtual accesible mediante entrada de voz y texto, mejorando la experiencia del usuario.</p>
-                    </div>
+    <!-- Header -->
+    <header class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-code text-blue-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">RumiDivulga</h1>
                 </div>
                 
-                <div class="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
-                    <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">2</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Comprensión de Datos</h3>
-                        <p class="text-sm text-gray-600">Pipeline multimodal: Audio/Texto → Web Speech API → Procesamiento NLP → Respuesta contextual</p>
-                    </div>
-                </div>
+                <!-- Desktop Navigation -->
+                <ul class="hidden md:flex space-x-8">
+                    <li><a href="#inicio" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Inicio</a></li>
+                    <li><a href="#articulos" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Artículos</a></li>
+                    <li><a href="#tutoriales" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Tutoriales</a></li>
+                    <li><a href="#herramientas" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Herramientas</a></li>
+                    <li><a href="#noticias" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Noticias</a></li>
+                    <li><a href="#recursos" class="text-gray-700 hover:text-blue-600 transition-colors nav-link">Recursos</a></li>
+                </ul>
                 
-                <div class="flex items-start gap-4 p-4 bg-yellow-50 rounded-lg">
-                    <div class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">3</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Preparación de Datos</h3>
-                        <p class="text-sm text-gray-600">Web Speech API para captura de voz + transcripción automática a texto con soporte para español.</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-start gap-4 p-4 bg-purple-50 rounded-lg">
-                    <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">4</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Modelado</h3>
-                        <p class="text-sm text-gray-600">Motor de IA con procesamiento de lenguaje natural para conversaciones contextuales.</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-start gap-4 p-4 bg-red-50 rounded-lg">
-                    <div class="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">5</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Evaluación</h3>
-                        <p class="text-sm text-gray-600">Monitoreo en tiempo real de interacciones, precisión de reconocimiento y satisfacción del usuario.</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-start gap-4 p-4 bg-indigo-50 rounded-lg">
-                    <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">6</div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 mb-1">Despliegue</h3>
-                        <p class="text-sm text-gray-600">Interfaz responsive con entrada dual (voz/texto), accesible en múltiples dispositivos.</p>
-                    </div>
-                </div>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
-        </div>
-        
-        <!-- Instrucciones de uso -->
-        <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-purple-700 text-white rounded-lg p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-4">
-                <i class="fas fa-microphone mr-2"></i>
-                Cómo Usar el Asistente OZUNA
-            </h2>
-            <ol class="space-y-3">
-                <li class="flex items-start gap-3">
-                    <span class="bg-white text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">1</span>
-                    <span>Haz clic en el ícono del chat (esquina inferior derecha) para abrir el asistente</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="bg-white text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">2</span>
-                    <span><strong>Para VOZ:</strong> Haz clic en el botón VERDE del micrófono y habla tu mensaje</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="bg-white text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">3</span>
-                    <span><strong>Para TEXTO:</strong> Escribe en el campo de texto y presiona Enter o el botón morado</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="bg-white text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">4</span>
-                    <span>El asistente responderá automáticamente usando inteligencia artificial</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="bg-white text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">5</span>
-                    <span>Puedes alternar entre voz y texto en cualquier momento</span>
-                </li>
-            </ol>
             
-            <div class="mt-6 p-4 bg-white/10 rounded-lg">
-                <p class="text-sm">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    <strong>Nota:</strong> Asegúrate de permitir el acceso al micrófono cuando el navegador lo solicite.
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4">
+                <ul class="space-y-2">
+                    <li><a href="#inicio" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Inicio</a></li>
+                    <li><a href="#articulos" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Artículos</a></li>
+                    <li><a href="#tutoriales" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Tutoriales</a></li>
+                    <li><a href="#herramientas" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Herramientas</a></li>
+                    <li><a href="#noticias" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Noticias</a></li>
+                    <li><a href="#recursos" class="block py-2 text-gray-700 hover:text-blue-600 nav-link">Recursos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="inicio" class="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    Divulgación de Software
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                    Descubre las últimas tendencias tecnológicas, aprende con nuestros tutoriales y mantente actualizado con las mejores herramientas de desarrollo.
                 </p>
-            </div>
-        </div>
-        
-        <!-- Características técnicas -->
-        <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-microphone-alt text-green-600 text-2xl"></i>
+                <div class="space-x-4">
+                    <a href="#articulos" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
+                        Explorar Artículos
+                    </a>
+                    <a href="#tutoriales" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-block">
+                        Ver Tutoriales
+                    </a>
                 </div>
-                <h3 class="font-bold text-gray-800 mb-2">Entrada por Voz</h3>
-                <p class="text-sm text-gray-600">Reconocimiento de voz en español con Web Speech API</p>
             </div>
-            
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-keyboard text-purple-600 text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-gray-800 mb-2">Entrada por Texto</h3>
-                <p class="text-sm text-gray-600">Interfaz de chat tradicional para escribir mensajes</p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-brain text-blue-600 text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-gray-800 mb-2">IA Avanzada</h3>
-                <p class="text-sm text-gray-600">Procesamiento de lenguaje natural inteligente</p>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Chat Container -->
-    <div class="chat-container">
-        <div class="chat-bubble" id="chatBubble">
-            <i class="fas fa-comments text-white text-2xl"></i>
-        </div>
-        
-        <div class="chat-window" id="chatWindow">
-            <div class="chat-header">
+        <!-- Featured Articles Section -->
+        <section id="articulos" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-newspaper text-blue-600 mr-3"></i>
+                        Artículos Destacados
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Análisis profundos sobre las últimas tendencias en desarrollo de software y tecnología.
+                    </p>
+                </div>
+                
+                <div id="articulos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Los artículos se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorials Section -->
+        <section id="tutoriales" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+                        Tutoriales Paso a Paso
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Aprende nuevas tecnologías con nuestros tutoriales detallados y ejemplos prácticos.
+                    </p>
+                </div>
+                
+                <div id="tutoriales-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Los tutoriales se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools & Reviews Section -->
+        <section id="herramientas" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-tools text-orange-600 mr-3"></i>
+                        Herramientas y Reseñas
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Descubre y compara las mejores herramientas de desarrollo del mercado.
+                    </p>
+                </div>
+                
+                <div id="herramientas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Las herramientas se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="noticias" class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-rss text-red-600 mr-3"></i>
+                        Últimas Noticias
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Mantente al día con las últimas novedades del mundo del desarrollo de software.
+                    </p>
+                </div>
+                
+                <div id="noticias-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Las noticias se cargarán dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="recursos" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-book text-purple-600 mr-3"></i>
+                        Recursos Educativos
+                    </h2>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                        Una colección curada de recursos para acelerar tu aprendizaje en programación.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-code text-4xl text-blue-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Lenguajes</h3>
+                            <p class="text-gray-600 text-sm">Recursos para aprender diferentes lenguajes de programación</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-layer-group text-4xl text-green-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Frameworks</h3>
+                            <p class="text-gray-600 text-sm">Guías y documentación de frameworks populares</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-database text-4xl text-orange-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Bases de Datos</h3>
+                            <p class="text-gray-600 text-sm">Recursos sobre gestión y diseño de bases de datos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="text-center">
+                            <i class="fas fa-cloud text-4xl text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Cloud</h3>
+                            <p class="text-gray-600 text-sm">Guías sobre tecnologías y servicios en la nube</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="py-16 bg-gradient-to-r from-blue-600 to-purple-700 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4">
+                    <i class="fas fa-envelope mr-3"></i>
+                    Suscríbete a Nuestro Newsletter
+                </h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto">
+                    Recibe las últimas novedades, tutoriales exclusivos y recursos directamente en tu bandeja de entrada.
+                </p>
+                <div class="max-w-md mx-auto flex">
+                    <input type="email" placeholder="Tu dirección de email" class="flex-1 px-4 py-3 rounded-l-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
+                    <button class="bg-white text-blue-600 px-6 py-3 rounded-r-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Suscribirse
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="font-bold text-lg">OZUNA Assistant</h3>
-                    <p class="text-sm text-blue-100">🎤 Voz y texto disponibles</p>
-                </div>
-                <button id="closeChat" class="text-white hover:text-blue-200">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div class="voice-status" id="voiceStatus">
-                <div class="voice-bars">
-                    <div class="voice-bar"></div>
-                    <div class="voice-bar"></div>
-                    <div class="voice-bar"></div>
-                    <div class="voice-bar"></div>
-                    <div class="voice-bar"></div>
-                </div>
-                <span id="voiceStatusText">Escuchando...</span>
-            </div>
-            
-            <div class="chat-messages" id="chatMessages">
-                <div class="message bot">
-                    <div class="message-avatar">
-                        <i class="fas fa-robot"></i>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-code text-blue-400 text-xl"></i>
+                        <h3 class="text-xl font-bold">RumiDivulga</h3>
                     </div>
-                    <div class="message-content">
-                        ¡Hola! Soy OZUNA, tu asistente virtual. Puedo ayudarte con información sobre diversos temas. Usa el botón verde 🎤 para hablar o escribe tu mensaje. ¿En qué puedo ayudarte?
+                    <p class="text-gray-400">
+                        Tu fuente confiable de información sobre desarrollo de software, tecnología y programación.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#articulos" class="text-gray-400 hover:text-white transition-colors">Artículos</a></li>
+                        <li><a href="#tutoriales" class="text-gray-400 hover:text-white transition-colors">Tutoriales</a></li>
+                        <li><a href="#herramientas" class="text-gray-400 hover:text-white transition-colors">Herramientas</a></li>
+                        <li><a href="#recursos" class="text-gray-400 hover:text-white transition-colors">Recursos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Categorías</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Frontend</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Backend</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">DevOps</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">IA & ML</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             
-            <div class="chat-input-container">
-                <button class="voice-button" id="voiceButton" title="Hablar">
-                    <i class="fas fa-microphone"></i>
-                </button>
-                <input 
-                    type="text" 
-                    class="chat-input" 
-                    id="chatInput" 
-                    placeholder="Escribe un mensaje..."
-                    autocomplete="off"
-                >
-                <button class="send-button" id="sendButton">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 RumiDivulga. Todos los derechos reservados.</p>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <script>
-        class VoiceTextChatbot {
-            constructor() {
-                // Web Speech API
-                this.recognition = null;
-                this.isRecording = false;
-                
-                // UI Elements
-                this.chatBubble = document.getElementById('chatBubble');
-                this.chatWindow = document.getElementById('chatWindow');
-                this.closeChat = document.getElementById('closeChat');
-                this.chatMessages = document.getElementById('chatMessages');
-                this.chatInput = document.getElementById('chatInput');
-                this.sendButton = document.getElementById('sendButton');
-                this.voiceButton = document.getElementById('voiceButton');
-                this.voiceStatus = document.getElementById('voiceStatus');
-                this.voiceStatusText = document.getElementById('voiceStatusText');
-                
-                // Historial de conversación
-                this.conversationHistory = [];
-                
-                this.init();
-            }
-            
-            init() {
-                this.setupEventListeners();
-                this.initSpeechRecognition();
-                console.log('✅ Chatbot OZUNA iniciado correctamente');
-            }
-            
-            setupEventListeners() {
-                this.chatBubble.addEventListener('click', () => this.toggleChat());
-                this.closeChat.addEventListener('click', () => this.toggleChat());
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                this.chatInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                });
-                this.voiceButton.addEventListener('click', () => this.toggleVoiceInput());
-            }
-            
-            initSpeechRecognition() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    console.warn('⚠️ Speech Recognition no soportado');
-                    this.voiceButton.style.display = 'none';
-                    return;
-                }
-                
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SpeechRecognition();
-                
-                this.recognition.continuous = false;
-                this.recognition.interimResults = true;
-                this.recognition.lang = 'es-ES';
-                this.recognition.maxAlternatives = 1;
-                
-                this.recognition.onstart = () => {
-                    console.log('🎤 Grabación iniciada');
-                    this.isRecording = true;
-                    this.voiceButton.classList.add('recording');
-                    this.voiceButton.querySelector('i').className = 'fas fa-stop';
-                    this.showVoiceStatus('Escuchando... Habla ahora 🎤');
-                };
-                
-                this.recognition.onresult = (event) => {
-                    let interimTranscript = '';
-                    let finalTranscript = '';
-                    
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript;
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-                    
-                    if (interimTranscript) {
-                        this.showVoiceStatus('📝 ' + interimTranscript);
-                        this.chatInput.value = interimTranscript;
-                    }
-                    
-                    if (finalTranscript) {
-                        console.log('✅ Transcripción:', finalTranscript);
-                        this.chatInput.value = finalTranscript;
-                        this.hideVoiceStatus();
-                        setTimeout(() => this.sendMessage(), 500);
-                    }
-                };
-                
-                this.recognition.onerror = (event) => {
-                    console.error('❌ Error:', event.error);
-                    this.isRecording = false;
-                    this.voiceButton.classList.remove('recording');
-                    this.voiceButton.querySelector('i').className = 'fas fa-microphone';
-                    
-                    let errorMsg = 'Error en reconocimiento de voz';
-                    if (event.error === 'no-speech') errorMsg = 'No se detectó voz';
-                    else if (event.error === 'not-allowed') errorMsg = 'Permiso de micrófono denegado';
-                    
-                    this.showVoiceStatus('⚠️ ' + errorMsg);
-                    setTimeout(() => this.hideVoiceStatus(), 3000);
-                };
-                
-                this.recognition.onend = () => {
-                    console.log('🛑 Grabación finalizada');
-                    this.isRecording = false;
-                    this.voiceButton.classList.remove('recording');
-                    this.voiceButton.querySelector('i').className = 'fas fa-microphone';
-                    setTimeout(() => this.hideVoiceStatus(), 1000);
-                };
-            }
-            
-            toggleVoiceInput() {
-                if (!this.recognition) {
-                    alert('Reconocimiento de voz no disponible. Prueba con Chrome o Edge.');
-                    return;
-                }
-                
-                if (this.isRecording) {
-                    this.recognition.stop();
-                } else {
-                    this.chatInput.value = '';
-                    this.recognition.start();
-                }
-            }
-            
-            showVoiceStatus(text) {
-                this.voiceStatusText.textContent = text;
-                this.voiceStatus.classList.add('active');
-            }
-            
-            hideVoiceStatus() {
-                this.voiceStatus.classList.remove('active');
-            }
-            
-            toggleChat() {
-                this.chatWindow.classList.toggle('open');
-                if (this.chatWindow.classList.contains('open')) {
-                    this.chatInput.focus();
-                }
-            }
-            
-            async sendMessage() {
-                const message = this.chatInput.value.trim();
-                if (!message) return;
-                
-                this.addMessage(message, 'user');
-                this.chatInput.value = '';
-                this.sendButton.disabled = true;
-                
-                this.showTypingIndicator();
-                
-                try {
-                    const response = await this.getAIResponse(message);
-                    this.removeTypingIndicator();
-                    this.addMessage(response, 'bot');
-                } catch (error) {
-                    console.error('Error:', error);
-                    this.removeTypingIndicator();
-                    this.addMessage('Lo siento, hubo un error. Por favor intenta de nuevo.', 'bot');
-                }
-                
-                this.sendButton.disabled = false;
-            }
-            
-            async getAIResponse(message) {
-                this.conversationHistory.push({
-                    role: 'user',
-                    content: message
-                });
-                
-                try {
-                    const response = await fetch('https://api.anthropic.com/v1/messages', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            model: 'claude-sonnet-4-20250514',
-                            max_tokens: 1000,
-                            messages: [
-                                {
-                                    role: 'user',
-                                    content: `Eres OZUNA, un asistente virtual amigable y útil. Responde de manera clara, concisa y en español. 
+    <!-- Contenedor para el Chatbot de Voz -->
+    <div id="voice-chat-root"></div>
 
-Conversación actual:
-Usuario: ${message}
-
-Responde de forma natural y útil.`
-                                }
-                            ]
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    const assistantMessage = data.content[0].text;
-                    
-                    this.conversationHistory.push({
-                        role: 'assistant',
-                        content: assistantMessage
-                    });
-                    
-                    return assistantMessage;
-                } catch (error) {
-                    console.error('Error en API:', error);
-                    throw error;
-                }
-            }
-            
-            addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}`;
-                
-                const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'message-avatar';
-                avatarDiv.innerHTML = sender === 'bot' 
-                    ? '<i class="fas fa-robot"></i>' 
-                    : '<i class="fas fa-user"></i>';
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                contentDiv.textContent = text;
-                
-                messageDiv.appendChild(avatarDiv);
-                messageDiv.appendChild(contentDiv);
-                this.chatMessages.appendChild(messageDiv);
-                
-                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-            }
-            
-            showTypingIndicator() {
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'message bot';
-                typingDiv.id = 'typingIndicator';
-                
-                const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'message-avatar';
-                avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                contentDiv.innerHTML = `
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                `;
-                
-                typingDiv.appendChild(avatarDiv);
-                typingDiv.appendChild(contentDiv);
-                this.chatMessages.appendChild(typingDiv);
-                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-            }
-            
-            removeTypingIndicator() {
-                const indicator = document.getElementById('typingIndicator');
-                if (indicator) indicator.remove();
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log(`
-╔═══════════════════════════════════════════╗
-║   OZUNA Assistant - Voice & Text Chat    ║
-║   🎤 VOZ: Botón VERDE                    ║
-║   💬 TEXTO: Campo de entrada             ║
-╚═══════════════════════════════════════════╝
-
-✅ Web Speech API: Activo
-✅ IA: Claude Sonnet 4
-✅ Idioma: Español
-📋 Framework: CRISP-DM
-            `);
-            
-            new VoiceTextChatbot();
-        });
-    </script>
+    <!-- React y ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Script Principal del Sitio -->
+    <script src="js/main.js"></script>
+    
+    <!-- Chatbot de Voz (React Component) -->
+    <script type="text/babel" src="js/voice-chatbot.js"></script>
 </body>
 </html>
