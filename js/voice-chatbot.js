@@ -2248,7 +2248,7 @@ const MessiChatbot = () => {
 ¡Bienvenido al sistema de inteligencia artificial especializado en Lionel Messi!
 
 ¿Qué te gustaría saber sobre Messi?
-Por ejemplo: "¿Cuántos Balones de Oro tiene?" o "¿Dónde juega actualmente?"`;
+`;
 
       addBotMessage(welcomeMessage);
     }, 500);
