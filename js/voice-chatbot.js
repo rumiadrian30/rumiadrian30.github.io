@@ -836,32 +836,91 @@ class AdvancedNLPEngine {
       equipos: [],
       premios: [],
       fechas: [],
-      numeros: []
+      numeros: [],
+      torneos: [],
+      habilidades: [],
+      temporadas: []
     };
 
     const lowerText = text.toLowerCase();
 
-    // Personas
-    if (lowerText.match(/messi|lionel|leo|pulga/)) entities.personas.push('Lionel Messi');
-    if (lowerText.match(/cristiano|ronaldo|cr7/)) entities.personas.push('Cristiano Ronaldo');
-    if (lowerText.match(/maradona|diego/)) entities.personas.push('Diego Maradona');
+    // Personas con más detalle
+    const personasPatterns = [
+      { pattern: /messi|lionel|leo|pulga/, entity: 'Lionel Messi' },
+      { pattern: /cristiano|ronaldo|cr7/, entity: 'Cristiano Ronaldo' },
+      { pattern: /maradona|diego/, entity: 'Diego Maradona' },
+      { pattern: /pele|pelé/, entity: 'Pelé' },
+      { pattern: /ronaldinho/, entity: 'Ronaldinho' },
+      { pattern: /(antonela|roccuzzo)/, entity: 'Antonela Roccuzzo' },
+      { pattern: /(suarez|suárez)/, entity: 'Luis Suárez' },
+      { pattern: /neymar/, entity: 'Neymar' },
+      { pattern: /mbappe|mbappé/, entity: 'Kylian Mbappé' }
+    ];
 
     // Equipos
-    if (lowerText.match(/barcelona|barça|barsa/)) entities.equipos.push('Barcelona');
-    if (lowerText.match(/\bpsg\b|paris/)) entities.equipos.push('PSG');
-    if (lowerText.match(/miami|inter miami/)) entities.equipos.push('Inter Miami');
-    if (lowerText.match(/argentina|seleccion|selección/)) entities.equipos.push('Argentina');
+    const equiposPatterns = [
+      { pattern: /barcelona|barça|barsa|fcb/, entity: 'Barcelona' },
+      { pattern: /\bpsg\b|paris saint germain/, entity: 'PSG' },
+      { pattern: /inter miami|miami/, entity: 'Inter Miami' },
+      { pattern: /newell'?s/, entity: 'Newell\'s Old Boys' },
+      { pattern: /argentina|seleccion|selección/, entity: 'Argentina' },
+      { pattern: /real madrid|madrid/, entity: 'Real Madrid' }
+    ];
 
-    // Premios
-    if (lowerText.match(/balon de oro|balón de oro/)) entities.premios.push('Balón de Oro');
-    if (lowerText.match(/bota de oro/)) entities.premios.push('Bota de Oro');
-    if (lowerText.match(/pichichi/)) entities.premios.push('Pichichi');
+    // Torneos
+    const torneosPatterns = [
+      { pattern: /champions league|champions|uefa champions/, entity: 'Champions League' },
+      { pattern: /la liga|liga española/, entity: 'La Liga' },
+      { pattern: /copa america|copa américa/, entity: 'Copa América' },
+      { pattern: /mundial|copa del mundo/, entity: 'Mundial' },
+      { pattern: /copa del rey/, entity: 'Copa del Rey' },
+      { pattern: /leagues cup|mls/, entity: 'MLS/Leagues Cup' },
+      { pattern: /league 1|liga francesa/, entity: 'Ligue 1' }
+    ];
 
-    // Números
-    const numeros = text.match(/\d+/g);
+    // Habilidades
+    const habilidadesPatterns = [
+      { pattern: /regate|dribling|gambeta/, entity: 'regate' },
+      { pattern: /vision|pase|asistencia/, entity: 'visión' },
+      { pattern: /definicion|definición|tiro/, entity: 'definición' },
+      { pattern: /tiro libre/, entity: 'tiro libre' },
+      { pattern: /control|control del balon/, entity: 'control' },
+      { pattern: /velocidad|aceleracion/, entity: 'velocidad' },
+      { pattern: /cabeza|cabezazo/, entity: 'cabezazo' }
+    ];
+
+    // Temporadas/años
+    const years = lowerText.match(/\b(19|20)\d{2}\b/g);
+    if (years) entities.temporadas.push(...years);
+
+    // Números específicos
+    const numeros = text.match(/\b\d+\b/g);
     if (numeros) entities.numeros.push(...numeros);
 
+    // Detectar patrones
+    [personasPatterns, equiposPatterns, torneosPatterns, habilidadesPatterns].forEach(patternSet => {
+      patternSet.forEach(({ pattern, entity }) => {
+        if (pattern.test(lowerText) && !entities[getCategory(entity)].includes(entity)) {
+          entities[getCategory(entity)].push(entity);
+        }
+      });
+    });
+
     return entities;
+
+    function getCategory(entity) {
+      if (['Lionel Messi', 'Cristiano Ronaldo', 'Diego Maradona', 'Pelé', 'Ronaldinho', 
+          'Antonela Roccuzzo', 'Luis Suárez', 'Neymar', 'Kylian Mbappé'].includes(entity)) {
+        return 'personas';
+      } else if (['Barcelona', 'PSG', 'Inter Miami', 'Newell\'s Old Boys', 'Argentina', 'Real Madrid'].includes(entity)) {
+        return 'equipos';
+      } else if (['Champions League', 'La Liga', 'Copa América', 'Mundial', 'Copa del Rey', 'MLS/Leagues Cup', 'Ligue 1'].includes(entity)) {
+        return 'torneos';
+      } else if (['regate', 'visión', 'definición', 'tiro libre', 'control', 'velocidad', 'cabezazo'].includes(entity)) {
+        return 'habilidades';
+      }
+      return 'premios'; // fallback
+    }
   }
 
   // Análisis de sentimiento básico
@@ -886,7 +945,7 @@ class AdvancedNLPEngine {
   }
 }
 
-// Sistema de clasificación de intenciones mejorado
+// Sistema de clasificación de intenciones 
 class IntentClassifier {
   constructor(nlpEngine) {
     this.nlp = nlpEngine;
@@ -1216,12 +1275,157 @@ class IntentClassifier {
           "te agradezco"
         ],
         confidence_threshold: 0.9
+      },
+
+      detalles_especificos_messi: {
+        patterns: [
+          /definicion tecnica/i,
+          /vision de juego/i,
+          /control del balon/i,
+          /regates especificos/i,
+          /tiro libre/i,
+          /tiro exterior/i,
+          /cambio de ritmo/i,
+          /hacer gambeta/i
+        ],
+        keywords: ['definicion', 'vision', 'control', 'regate', 'tiro', 'libre', 'exterior', 'gambeta'],
+        examples: [
+          "como es la definicion de messi",
+          "vision de juego de messi",
+          "control del balon de messi",
+          "como son los regates de messi"
+        ],
+        confidence_threshold: 0.7
+      },
+
+      estadisticas_por_torneo: {
+        patterns: [
+          /goles en (champions|liga|copa del rey|copa america|mundial)/i,
+          /estadisticas en (champions|liga|copa)/i,
+          /(champions|liga|copa) messi/i,
+          /(mundial|copa america) goles/i
+        ],
+        keywords: ['goles', 'champions', 'liga', 'copa', 'america', 'mundial', 'estadisticas'],
+        examples: [
+          "goles de messi en champions",
+          "estadisticas en liga",
+          "goles en copa america",
+          "goles en mundial"
+        ],
+        confidence_threshold: 0.7
+      },
+
+      momentos_historicos: {
+        patterns: [
+          /gol (a getafe|vs getafe)/i,
+          /gol del siglo/i,
+          /final (champions|mundial|copa america)/i,
+          /momento historico/i,
+          /partido historico/i,
+          /mejor gol/i,
+          /remontada psg/i,
+          /gol a (real madrid|manchester|arsenal)/i
+        ],
+        keywords: ['gol', 'getafe', 'siglo', 'final', 'historico', 'remontada', 'psg', 'momento'],
+        examples: [
+          "gol de messi a getafe",
+          "gol del siglo de messi",
+          "final champions 2009",
+          "remontada psg"
+        ],
+        confidence_threshold: 0.7
+      },
+
+      comparaciones_detalladas: {
+        patterns: [
+          /cristiano (vs|comparado|comparacion)/i,
+          /maradona (vs|comparado|comparacion)/i,
+          /pele (vs|comparado|comparacion)/i,
+          /mejor que cristiano/i,
+          /mejor que maradona/i,
+          /diferencias con cristiano/i,
+          /diferencias con maradona/i
+        ],
+        keywords: ['cristiano', 'maradona', 'pele', 'comparacion', 'vs', 'diferencias', 'mejor'],
+        examples: [
+          "cristiano vs messi detallado",
+          "comparacion con maradona detallada",
+          "diferencias con pele"
+        ],
+        confidence_threshold: 0.75
+      },
+
+      evolucion_temporal: {
+        patterns: [
+          /como (empezo|empezó) messi/i,
+          /primera etapa/i,
+          /evolucion de messi/i,
+          /cambio de estilo/i,
+          /messi (joven|viejo)/i,
+          /diferencia (2009|2012|2015) (2019|2022)/i
+        ],
+        keywords: ['empezo', 'evolucion', 'etapa', 'joven', 'viejo', 'cambio', 'estilo'],
+        examples: [
+          "como empezo messi",
+          "evolucion de messi",
+          "cambio de estilo de messi"
+        ],
+        confidence_threshold: 0.7
       }
     };
   }
 
   // Clasificación con algoritmo de scoring múltiple
   classify(userQuery) {
+     // Normalizar la consulta
+    const normalizedQuery = userQuery
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    console.log('Consulta normalizada:', normalizedQuery);
+    
+    // Detección de consultas muy específicas
+    const consultasEspecificas = {
+      // Patrones para habilidades técnicas específicas
+      tecnica_especifica: {
+        pattern: /(como|de que forma|de que manera) (juega|regatea|define|pasa|tira) messi/i,
+        intent: 'detalles_especificos_messi'
+      },
+      
+      // Patrones para estadísticas por equipo específico
+      estadisticas_equipo_especifico: {
+        pattern: /(goles|asistencias|partidos) (en|con) (barcelona|psg|miami|argentina)/i,
+        intent: 'estadisticas_generales'
+      },
+      
+      // Patrones para comparaciones directas
+      comparacion_directa: {
+        pattern: /(messi|cristiano|maradona) es mejor que/i,
+        intent: 'comparaciones'
+      }
+    };
+    
+    // Verificar patrones específicos primero
+    for (const [key, { pattern, intent }] of Object.entries(consultasEspecificas)) {
+      if (pattern.test(userQuery)) {
+        console.log('Consulta específica detectada:', key);
+        const tokens = this.nlp.tokenize(userQuery);
+        const entities = this.nlp.extractEntities(userQuery);
+        return {
+          intent: intent,
+          confidence: 0.95, // Alta confianza para patrones específicos
+          entities: entities,
+          tokens: tokens,
+          isSpecific: true
+        };
+      }
+    }
+  
+    
     const tokens = this.nlp.tokenize(userQuery);
     const expandedTokens = this.nlp.expandWithSynonyms(tokens);
     const entities = this.nlp.extractEntities(userQuery);
@@ -2099,59 +2303,215 @@ Legado estadístico: Posiblemente nadie supere sus marcas en décadas.`;
   }
 
   generateDefault(userQuery, tokens) {
-    // Intentar deducir qué quiere el usuario
-    if (tokens.some(t => t.includes('messi') || t.includes('leo') || t.includes('lionel'))) {
-      return this.generateBiografia();
+    // Análisis más profundo de la consulta
+    const lowerQuery = userQuery.toLowerCase();
+    
+    // Detectar si es sobre Messi pero no lo nombra
+    const messiKeywords = ['el', 'mejor', 'jugador', 'futbolista', 'argentino', 'barcelona', '10'];
+    const isAboutMessiImplied = messiKeywords.some(keyword => lowerQuery.includes(keyword)) && 
+                                lowerQuery.length < 30;
+    
+    if (isAboutMessiImplied) {
+      return `Parece que estás preguntando sobre Lionel Messi, ¿es correcto?
+
+  Si es así, puedo darte información detallada sobre:
+  • Estadísticas específicas por equipo o torneo
+  • Habilidades técnicas particulares
+  • Comparaciones con otros jugadores
+  • Momentos históricos específicos
+  • Premios y récords concretos
+
+  Por ejemplo:
+  • "¿Cuántos goles tiene Messi en Champions?"
+  • "¿Cómo es el regate de Messi?"
+  • "¿Qué diferencia a Messi de Cristiano Ronaldo?"
+  • "¿Cuál fue el mejor gol de Messi?"`;
     }
     
-    // Si parece ser una pregunta pero no detectamos Messi
-    const questionWords = ['que', 'quien', 'cuantos', 'cuando', 'donde', 'como', 'porque', 'cual'];
-    const isQuestion = questionWords.some(word => tokens.includes(word));
+    // Si no es sobre Messi
+    const noMessiTopics = ['cristiano', 'ronaldo', 'maradona', 'neymar', 'mbappe', 'dólar', 'tarjeta', 'seguro'];
+    const isOtherTopic = noMessiTopics.some(topic => lowerQuery.includes(topic));
     
-    if (isQuestion) {
-      return `He detectado que tienes una pregunta, pero no estoy seguro del tema específico.
-
-¿Podrías ser más específico? Por ejemplo:
-
-Sobre estadísticas:
-• "¿Cuántos goles tiene Messi en total?"
-• "¿Cuántos partidos jugó en Barcelona?"
-
-Sobre premios:
-• "¿Cuántos Balones de Oro tiene?"
-• "¿Qué títulos ganó con Argentina?"
-
-Sobre biografía:
-• "¿Cuándo nació Messi?"
-• "¿Dónde juega actualmente?"
-
-Sobre vida personal:
-• "¿Quién es la esposa de Messi?"
-• "¿Cuántos hijos tiene?"
-
-O escribe tu pregunta de forma más concreta.`;
+    if (isOtherTopic && !lowerQuery.includes('messi')) {
+      return this.generateNoMessiResponse();
     }
     
-    // Respuesta general de bienvenida
+    // Respuesta general mejorada
     return `Asistente especializado en Lionel Messi
 
-Hola. Soy un asistente virtual con información completa sobre Lionel Messi.
+  He detectado tu consulta pero necesito más especificidad para darte una respuesta precisa.
 
-Puedo responderte sobre:
-• Carrera y estadísticas: Barcelona, PSG, Inter Miami, Argentina
-• Premios y títulos: Balones de Oro, Champions, Mundial 2022
-• Récords y logros: Todos sus récords históricos
-• Vida personal: Familia, esposa, hijos, patrimonio
-• Comparaciones: vs Cristiano, vs Maradona, vs Pelé
+  Para obtener información específica, intenta preguntar sobre:
 
-Ejemplos de preguntas:
-• "¿Cuántos Balones de Oro tiene Messi?"
-• "¿Dónde juega actualmente?"
-• "¿Cuántos goles tiene en total?"
-• "¿Qué edad tiene Messi?"
-• "¿Cuántos hijos tiene?"
+  📊 **Estadísticas concretas:**
+  • "¿Cuántos goles tiene Messi en Champions League?"
+  • "¿Cuántas asistencias dio en Barcelona?"
+  • "¿Cuál es su promedio de gol en La Liga?"
 
-¿Qué te gustaría saber sobre el mejor jugador de todos los tiempos?`;
+  ⚽ **Habilidades técnicas:**
+  • "¿Cómo es el regate de Messi?"
+  • "¿Qué tan bueno es en tiros libres?"
+  • "¿Cómo es su visión de juego?"
+
+  🏆 **Logros específicos:**
+  • "¿Qué récords tiene Messi?"
+  • "¿Cuántos Balones de Oro ganó?"
+  • "¿Qué títulos ganó con Argentina?"
+
+  📅 **Periodos específicos:**
+  • "¿Cómo fue Messi en el Barcelona 2011-12?"
+  • "¿Qué hizo en el Mundial 2022?"
+  • "¿Cómo es su etapa en Miami?"
+
+  ¿Sobre qué aspecto específico de Messi te gustaría saber?`;
+  }
+
+  generateDetallesEspecificos(entities, tokens) {
+    const habilidades = this.kb.habilidades;
+    
+    if (entities.habilidades.includes('regate')) {
+      return `Habilidad de regate de Messi:
+
+  Considerado el mejor regateador de la historia por:
+  1. Centro de gravedad bajo (1.70m) que le da estabilidad
+  2. Cambios de dirección súbitos sin perder velocidad
+  3. Control del balón pegado al pie incluso a máxima velocidad
+  4. Finta corporal excepcional que engaña a los defensores
+
+  Estadísticas:
+  • Promedio de 5+ regates exitosos por partido en su prime
+  • Tasa de éxito en regates: 60-70%
+  • Récord de 12 regates exitosos en un solo partido
+
+  Regates característicos:
+  • La Croqueta: Amortiguar entre ambos pies
+  • Elástico: Finta exterior-interior
+  • Cambio de ritmo brusco
+  • Giros de 360 grados
+
+  Entrenadores que lo elogiaron:
+  Pep Guardiola: "Nunca he visto a nadie con ese control"
+  Johan Cruyff: "El balón parece pegado a su pie"
+  Diego Maradona: "Dios puso la pelota en sus pies"`;
+    }
+
+    if (entities.habilidades.includes('visión')) {
+      return `Visión de juego de Messi:
+
+  Capacidad única para:
+  1. Ver pases que otros no ven
+  2. Anticipar movimientos 2-3 jugadas antes
+  3. Crear espacios donde no los hay
+  4. Distribuir el juego con precisión milimétrica
+
+  Estadísticas de asistencias:
+  • Total carrera: 350+ asistencias
+  • Barcelona: 305 asistencias oficiales
+  • Argentina: 58 asistencias
+  • Promedio: 0.35 asistencias/partido
+
+  Asistencias memorables:
+  • A Dani Alves vs Real Madrid 2011 (Clásico)
+  • A Pedro vs Manchester United (Final Champions 2011)
+  • A Di María vs Francia (Final Mundial 2022)
+  • A Lautaro Martínez vs Colombia (Copa América 2024)
+
+  Características:
+  • Pases filtrados de 30-40 metros con precisión
+  • Pases de tacón en espacios reducidos
+  • Cambios de juego a la perfección
+  • Pases al espacio para compañeros en movimiento`;
+    }
+
+    return `Habilidades técnicas de Messi:
+
+  Messi combina múltiples habilidades a un nivel histórico:
+
+  1. Regate (10/10): El mejor de la historia
+  2. Visión (10/10): Ve pases imposibles
+  3. Definición (10/10): Precisión letal
+  4. Tiro libre (9/10): Evolucionó a especialista
+  5. Velocidad (9/10): Aceleración explosiva
+  6. Pierna derecha (8/10): Efectiva aunque es zurdo
+
+  ¿Sobre qué habilidad específica quieres más detalles?`;
+  }
+
+  generateEstadisticasPorTorneo(entities) {
+    const stats = this.kb.carrera;
+    const premios = this.kb.premios;
+    
+    if (entities.torneos.includes('Champions League')) {
+      return `Messi en Champions League:
+
+  Estadísticas totales:
+  • Partidos: 163
+  • Goles: 129 (4º histórico)
+  • Asistencias: 49
+  • Promedio: 0.79 goles/partido
+  • Hat-tricks: 8
+
+  Por fases:
+  • Fase de grupos: 71 goles (récord)
+  • Octavos: 29 goles
+  • Cuartos: 12 goles
+  • Semifinales: 6 goles
+  • Finales: 2 goles
+
+  Récords:
+  • Máximo goleador para un mismo club: 120 (Barcelona)
+  • Más goles en fase de grupos: 71
+  • Más hat-tricks: 8 (compartido)
+  • Jugador con más temporadas consecutivas marcando: 16
+
+  Finales jugadas (4):
+  • 2009: Barcelona 2-0 Manchester United (gol de cabeza)
+  • 2011: Barcelona 3-1 Manchester United (asistencia)
+  • 2015: Barcelona 3-1 Juventus (no marcó)
+  • 2021: Barcelona 1-3 PSG (gol de tiro libre)
+
+  MVP de Champions: 3 veces (2009, 2011, 2015)`;
+    }
+
+    if (entities.torneos.includes('La Liga')) {
+      return `Messi en La Liga:
+
+  Estadísticas con Barcelona:
+  • Partidos: 520
+  • Goles: 474 (récord histórico)
+  • Asistencias: 192 (récord histórico)
+  • Promedio: 0.91 goles/partido
+  • Hat-tricks: 36 (récord)
+
+  Récords absolutos:
+  • Máximo goleador histórico de La Liga
+  • Máximo asistente histórico de La Liga
+  • Más Pichichis: 8
+  • Más goles en una temporada: 50 (2011-12)
+  • Más hat-tricks: 36
+  • Único jugador en marcar 40+ goles en 5 temporadas
+
+  Temporadas destacadas:
+  • 2011-12: 50 goles en 37 partidos (1.35 promedio)
+  • 2012-13: 46 goles en 32 partidos (1.44 promedio)
+  • 2014-15: 43 goles en 38 partidos (1.13 promedio)
+
+  Partidos memorables:
+  • Real Madrid 2-6 Barcelona (2009): 2 goles
+  • Barcelona 5-0 Real Madrid (2010): 1 gol
+  • Levante 0-5 Barcelona (2013): 3 goles`;
+    }
+
+    return `Estadísticas de Messi por torneo:
+
+  Selecciona un torneo específico:
+  • Champions League: 129 goles en 163 partidos
+  • La Liga: 474 goles en 520 partidos (récord)
+  • Copa del Rey: 56 goles en 80 partidos
+  • Mundial: 13 goles en 26 partidos
+  • Copa América: 13 goles en 34 partidos
+
+  ¿De qué torneo específico quieres estadísticas?`;
   }
 }
 
